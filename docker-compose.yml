@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13.1-alpine
+    ports:
+      - "5433:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - backend
+    environment:
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_USER=mystic
+      - POSTGRES_DB=twitter
+      - PGDATA=/var/lib/postgresql/data/pgdata
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/app
+    environment:
+      - DATABASE_URL=jdbc:postgresql://db:5432/twitter
+      - DATABASE_USERNAME=mystic
+      - DATABASE_PASSWORD=123456
+      - PORT=8080
+    networks:
+      - backend
+
+networks:
+  backend:
+volumes:
+  db:
