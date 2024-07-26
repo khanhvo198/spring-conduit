@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Component
@@ -21,17 +22,13 @@ public class JwtAuthFilter extends GenericFilter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        String headers = ((HttpServletRequest)request).getHeader(HttpHeaders.AUTHORIZATION);
-        String token = headers.substring(7);
-        System.out.println(token);
-
-        boolean isValidToken = jwtUtils.validateToken(token);
-
-        if (isValidToken) {
-            String subject = jwtUtils.getSubject(token);
-            Authentication auth = authenticationProvider.getAuthentication(subject);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-        }
+        Optional.ofNullable(((HttpServletRequest)request).getHeader(HttpHeaders.AUTHORIZATION))
+                .filter(authHeader -> authHeader.startsWith("Token"))
+                .map(authHeader -> authHeader.substring(7))
+                .filter(jwtUtils::validateToken)
+                .map(jwtUtils::getSubject)
+                .map(authenticationProvider::getAuthentication)
+                .ifPresent(SecurityContextHolder.getContext()::setAuthentication);
 
         filterChain.doFilter(request, response);
     }

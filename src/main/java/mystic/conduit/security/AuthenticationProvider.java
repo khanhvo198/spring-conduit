@@ -18,7 +18,4 @@ public class AuthenticationProvider {
         UserDetails user = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
     }
-
-
-
 }

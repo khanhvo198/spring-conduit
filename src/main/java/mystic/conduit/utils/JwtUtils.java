@@ -41,5 +41,14 @@ public class JwtUtils {
         }
     }
 
+    public String encode (String email) {
+        try {
+            return Jwts.builder().subject(email).signWith(key).compact();
+        } catch (JwtException e) {
+            return null;
+        }
+    }
+
+
 
 }
