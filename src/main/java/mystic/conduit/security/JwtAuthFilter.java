@@ -18,14 +18,14 @@ import java.util.Optional;
 public class JwtAuthFilter extends GenericFilter {
     private final JwtUtils jwtUtils;
     private final AuthenticationProvider authenticationProvider;
+    private final String PREFIX_TOKEN = "Token ";
 
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         Optional.ofNullable(((HttpServletRequest)request).getHeader(HttpHeaders.AUTHORIZATION))
-                .filter(authHeader -> authHeader.startsWith("Token"))
-                .map(authHeader -> authHeader.substring(7))
-                .filter(jwtUtils::validateToken)
+                .filter(authHeader -> authHeader.startsWith(PREFIX_TOKEN))
+                .map(authHeader -> authHeader.substring(PREFIX_TOKEN.length()))
                 .map(jwtUtils::getSubject)
                 .map(authenticationProvider::getAuthentication)
                 .ifPresent(SecurityContextHolder.getContext()::setAuthentication);

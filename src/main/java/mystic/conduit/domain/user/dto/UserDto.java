@@ -1,4 +1,4 @@
-package mystic.conduit.domain.auth.dto;
+package mystic.conduit.domain.user.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

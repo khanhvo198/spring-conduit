@@ -1,5 +1,6 @@
 package mystic.conduit.utils;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtException;
@@ -32,11 +33,15 @@ public class JwtUtils {
     }
 
     public String getSubject (String token) {
+        System.out.println(token);
         try {
             Claims claims = Jwts.parser().verifyWith((SecretKey) key).build().parseSignedClaims(token).getPayload();
-            return claims.getSubject();
+            String subject = claims.getSubject();
+            System.out.println(subject);
+            return subject;
 
         } catch (JwtException e) {
+            System.out.println(e.getMessage());
             return null;
         }
     }

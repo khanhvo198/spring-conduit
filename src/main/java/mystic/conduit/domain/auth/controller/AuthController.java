@@ -4,7 +4,7 @@ package mystic.conduit.domain.auth.controller;
 import lombok.AllArgsConstructor;
 import mystic.conduit.domain.auth.dto.LoginDto;
 import mystic.conduit.domain.auth.dto.RegistrationDto;
-import mystic.conduit.domain.auth.dto.UserDto;
+import mystic.conduit.domain.user.dto.UserDto;
 import mystic.conduit.domain.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

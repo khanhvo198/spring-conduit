@@ -2,6 +2,7 @@ package mystic.conduit.domain.auth.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,12 +10,12 @@ import java.util.Collection;
 
 @AllArgsConstructor
 @Builder
+@Getter
 public class AuthUserDetails implements UserDetails {
 
-    private String email;
-    private Long id;
-    public AuthUserDetails (String id, String email) {}
+    private final String email;
 
+    private final Long id;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
