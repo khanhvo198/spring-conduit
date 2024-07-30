@@ -6,14 +6,13 @@ import mystic.conduit.domain.auth.dto.RegistrationDto;
 import mystic.conduit.domain.user.dto.UserDto;
 import mystic.conduit.domain.user.entity.UserEntity;
 import mystic.conduit.domain.user.repository.UserRepository;
-import mystic.conduit.exception.AppException;
-import mystic.conduit.exception.Error;
+import mystic.conduit.exception.EmailTakenException;
+import mystic.conduit.exception.UserNotFoundException;
+import mystic.conduit.exception.UsernameTakenException;
 import mystic.conduit.shared.Mapper;
 import mystic.conduit.utils.JwtUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -27,14 +26,17 @@ public class AuthServiceImpl implements AuthService{
     public UserDto login(LoginDto user) {
         UserEntity userEntity = userRepository.findByEmail(user.getEmail())
                                     .filter(candidate -> passwordEncoder.matches(user.getPassword(), candidate.getPassword()))
-                                    .orElseThrow(() -> new AppException(Error.USER_NOT_FOUND));
+                                    .orElseThrow(UserNotFoundException::new);
 
         return mapper.convertEntityToUserDto(userEntity);
     }
 
     @Override
     public UserDto registration(RegistrationDto user) {
-        userRepository.findByEmailOrUsername(user.getEmail(), user.getUsername()).stream().findAny().ifPresent(userEntity -> { throw new AppException(Error.USER_NOT_FOUND); });
+        userRepository.findByEmail(user.getEmail()).stream().findAny().ifPresent(userEntity -> { throw new EmailTakenException(); });
+
+        userRepository.findByUsername(user.getUsername()).stream().findAny().ifPresent(userEntity -> { throw new UsernameTakenException();});
+
 
         UserEntity userEntity = UserEntity.builder()
                 .email(user.getEmail())
@@ -43,6 +45,8 @@ public class AuthServiceImpl implements AuthService{
                 .bio("")
                 .image("")
                 .build();
+
+
 
         userRepository.save(userEntity);
 
