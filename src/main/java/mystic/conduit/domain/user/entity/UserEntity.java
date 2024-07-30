@@ -2,8 +2,6 @@ package mystic.conduit.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import mystic.conduit.domain.article.entity.ArticleEntity;
-import mystic.conduit.domain.article.entity.FavoriteEntity;
 
 @Getter
 @Setter

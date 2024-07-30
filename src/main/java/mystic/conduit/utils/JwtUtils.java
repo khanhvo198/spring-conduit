@@ -1,13 +1,9 @@
 package mystic.conduit.utils;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +19,7 @@ public class JwtUtils {
     }
 
 
-    public boolean validateToken (String token) {
+    public boolean validateToken(String token) {
         try {
             Date exp = Jwts.parser().verifyWith((SecretKey) key).build().parseSignedClaims(token).getPayload().getExpiration();
             return exp.after(Date.from(Instant.now()));
@@ -32,7 +28,7 @@ public class JwtUtils {
         }
     }
 
-    public String getSubject (String token) {
+    public String getSubject(String token) {
         System.out.println(token);
         try {
             Claims claims = Jwts.parser().verifyWith((SecretKey) key).build().parseSignedClaims(token).getPayload();
@@ -46,14 +42,13 @@ public class JwtUtils {
         }
     }
 
-    public String encode (String email) {
+    public String encode(String email) {
         try {
             return Jwts.builder().subject(email).signWith(key).compact();
         } catch (JwtException e) {
             return null;
         }
     }
-
 
 
 }

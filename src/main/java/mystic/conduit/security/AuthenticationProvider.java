@@ -7,14 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 @AllArgsConstructor
 public class AuthenticationProvider {
     private final UserDetailsService userDetailsService;
 
-    public Authentication getAuthentication (String username) {
+    public Authentication getAuthentication(String username) {
         UserDetails user = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
     }

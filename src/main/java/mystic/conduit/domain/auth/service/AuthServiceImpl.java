@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
@@ -25,17 +25,21 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public UserDto login(LoginDto user) {
         UserEntity userEntity = userRepository.findByEmail(user.getEmail())
-                                    .filter(candidate -> passwordEncoder.matches(user.getPassword(), candidate.getPassword()))
-                                    .orElseThrow(UserNotFoundException::new);
+                .filter(candidate -> passwordEncoder.matches(user.getPassword(), candidate.getPassword()))
+                .orElseThrow(UserNotFoundException::new);
 
         return mapper.convertEntityToUserDto(userEntity);
     }
 
     @Override
     public UserDto registration(RegistrationDto user) {
-        userRepository.findByEmail(user.getEmail()).stream().findAny().ifPresent(userEntity -> { throw new EmailTakenException(); });
+        userRepository.findByEmail(user.getEmail()).stream().findAny().ifPresent(userEntity -> {
+            throw new EmailTakenException();
+        });
 
-        userRepository.findByUsername(user.getUsername()).stream().findAny().ifPresent(userEntity -> { throw new UsernameTakenException();});
+        userRepository.findByUsername(user.getUsername()).stream().findAny().ifPresent(userEntity -> {
+            throw new UsernameTakenException();
+        });
 
 
         UserEntity userEntity = UserEntity.builder()
@@ -45,7 +49,6 @@ public class AuthServiceImpl implements AuthService{
                 .bio("")
                 .image("")
                 .build();
-
 
 
         userRepository.save(userEntity);

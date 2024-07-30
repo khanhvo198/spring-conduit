@@ -33,23 +33,22 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    private ResponseEntity<?> handleNotFoundException (String context, NotFoundException ex, WebRequest req) {
+    private ResponseEntity<?> handleNotFoundException(String context, NotFoundException ex, WebRequest req) {
         String message = ex.getMessage();
-        HttpStatus status= HttpStatus.NOT_FOUND;
+        HttpStatus status = HttpStatus.NOT_FOUND;
 
         Map<String, Object> error = toMap("errors", toMap(context, toList(message)));
         return handleExceptionInternal(ex, error, new HttpHeaders(), status, req);
 
     }
 
-    private ResponseEntity<?> handleTakenException (String field, TakenException ex, WebRequest req) {
+    private ResponseEntity<?> handleTakenException(String field, TakenException ex, WebRequest req) {
         String message = ex.getMessage();
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
 
         Map<String, Object> error = toMap("errors", toMap(field, toList(message)));
         return handleExceptionInternal(ex, error, new HttpHeaders(), status, req);
     }
-
 
 
     private Map<String, Object> toMap(String key, Object value) {

@@ -13,7 +13,7 @@ public class Mapper {
     private final ModelMapper mapper;
     private final JwtUtils jwtUtils;
 
-    public UserDto convertEntityToUserDto (UserEntity userEntity) {
+    public UserDto convertEntityToUserDto(UserEntity userEntity) {
         UserDto response = mapper.map(userEntity, UserDto.class);
         response.setToken(jwtUtils.encode(response.getEmail()));
         return response;

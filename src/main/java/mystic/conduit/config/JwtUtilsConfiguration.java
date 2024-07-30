@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class JwtUtilsConfiguration {
 
     @Bean
-    public JwtUtils getJwtUtils (
+    public JwtUtils getJwtUtils(
             @Value("${conduit.auth.token.sign-key}") String secretKey,
             @Value("${conduit.auth.token.expiration}") Long expiration) throws Exception {
         return new JwtUtils(secretKey, expiration);

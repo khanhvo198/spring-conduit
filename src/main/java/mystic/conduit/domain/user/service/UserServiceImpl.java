@@ -37,12 +37,16 @@ public class UserServiceImpl implements UserService {
         System.out.println(userEntity);
 
         if (user.getEmail() != null) {
-            userRepository.findByEmail(user.getEmail()).filter(found -> found.getId().equals(userEntity.getId())).ifPresent(found -> { throw new EmailTakenException(); });
+            userRepository.findByEmail(user.getEmail()).filter(found -> found.getId().equals(userEntity.getId())).ifPresent(found -> {
+                throw new EmailTakenException();
+            });
             userEntity.setEmail(user.getEmail());
         }
 
         if (user.getUsername() != null) {
-            userRepository.findByUsername(user.getUsername()).filter(found -> found.getId().equals(userEntity.getId())).ifPresent(found -> { throw new UsernameTakenException(); } );
+            userRepository.findByUsername(user.getUsername()).filter(found -> found.getId().equals(userEntity.getId())).ifPresent(found -> {
+                throw new UsernameTakenException();
+            });
             userEntity.setUsername(user.getUsername());
         }
 
