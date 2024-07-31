@@ -3,6 +3,8 @@ package mystic.conduit.domain.user.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Builder
@@ -30,5 +32,25 @@ public class UserEntity {
 
     @Column
     private String image;
+
+
+    @ManyToMany
+    @JoinTable(
+            name="follows",
+            joinColumns = @JoinColumn(name="follower_id"),
+            inverseJoinColumns = @JoinColumn(name="following_id")
+    )
+    private Set<UserEntity> followers;
+
+
+    @ManyToMany
+    @JoinTable(
+            name="follows",
+            joinColumns = @JoinColumn(name="following_id"),
+            inverseJoinColumns = @JoinColumn(name="follower_id")
+    )
+    private Set<UserEntity> followings;
+
+
 
 }

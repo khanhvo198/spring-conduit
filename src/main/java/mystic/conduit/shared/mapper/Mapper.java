@@ -1,4 +1,4 @@
-package mystic.conduit.shared;
+package mystic.conduit.shared.mapper;
 
 import lombok.AllArgsConstructor;
 import mystic.conduit.domain.user.dto.UserDto;
@@ -13,9 +13,14 @@ public class Mapper {
     private final ModelMapper mapper;
     private final JwtUtils jwtUtils;
 
-    public UserDto convertEntityToUserDto(UserEntity userEntity) {
+    public UserDto mapToUserResponse(UserEntity userEntity) {
         UserDto response = mapper.map(userEntity, UserDto.class);
         response.setToken(jwtUtils.encode(response.getEmail()));
         return response;
+    }
+
+
+    public <T,S> S mapToResponse (T source, Class<S> type) {
+        return mapper.map(source, type);
     }
 }

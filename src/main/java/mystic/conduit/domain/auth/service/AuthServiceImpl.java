@@ -9,7 +9,7 @@ import mystic.conduit.domain.user.repository.UserRepository;
 import mystic.conduit.exception.EmailTakenException;
 import mystic.conduit.exception.UserNotFoundException;
 import mystic.conduit.exception.UsernameTakenException;
-import mystic.conduit.shared.Mapper;
+import mystic.conduit.shared.mapper.Mapper;
 import mystic.conduit.utils.JwtUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
                 .filter(candidate -> passwordEncoder.matches(user.getPassword(), candidate.getPassword()))
                 .orElseThrow(UserNotFoundException::new);
 
-        return mapper.convertEntityToUserDto(userEntity);
+        return mapper.mapToUserResponse(userEntity);
     }
 
     @Override
@@ -53,6 +53,6 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(userEntity);
 
-        return mapper.convertEntityToUserDto(userEntity);
+        return mapper.mapToUserResponse(userEntity);
     }
 }

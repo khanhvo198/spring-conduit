@@ -8,7 +8,7 @@ import mystic.conduit.domain.user.repository.UserRepository;
 import mystic.conduit.exception.EmailTakenException;
 import mystic.conduit.exception.UserNotFoundException;
 import mystic.conduit.exception.UsernameTakenException;
-import mystic.conduit.shared.Mapper;
+import mystic.conduit.shared.mapper.Mapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-        return mapper.convertEntityToUserDto(userEntity);
+        return mapper.mapToUserResponse(userEntity);
     }
 
     @Override
@@ -64,6 +64,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(userEntity);
 
-        return mapper.convertEntityToUserDto(userEntity);
+        return mapper.mapToUserResponse(userEntity);
     }
 }
