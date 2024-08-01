@@ -2,6 +2,7 @@ package mystic.conduit.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.catalina.User;
 
 import java.util.Set;
 
@@ -37,19 +38,19 @@ public class UserEntity {
     @ManyToMany
     @JoinTable(
             name="follows",
-            joinColumns = @JoinColumn(name="follower_id"),
-            inverseJoinColumns = @JoinColumn(name="following_id")
+            joinColumns = @JoinColumn(name="follower"),
+            inverseJoinColumns = @JoinColumn(name="following")
     )
-    private Set<UserEntity> followers;
+    private Set<UserEntity> follower;
 
 
     @ManyToMany
     @JoinTable(
             name="follows",
-            joinColumns = @JoinColumn(name="following_id"),
-            inverseJoinColumns = @JoinColumn(name="follower_id")
+            joinColumns = @JoinColumn(name="following"),
+            inverseJoinColumns = @JoinColumn(name="follower")
     )
-    private Set<UserEntity> followings;
+    private Set<UserEntity> following;
 
 
 
