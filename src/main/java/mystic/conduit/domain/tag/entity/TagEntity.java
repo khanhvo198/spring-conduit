@@ -15,7 +15,7 @@ public class TagEntity {
     protected Long id;
 
     @Column(nullable = false)
-    private String tag;
+    private String name;
 
     @ManyToOne
     @JoinColumn(nullable = false)
