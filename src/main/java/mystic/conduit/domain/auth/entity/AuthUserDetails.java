@@ -14,8 +14,8 @@ import java.util.Collection;
 public class AuthUserDetails implements UserDetails {
 
     private final String email;
-
     private final Long id;
+    private final String username;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -30,7 +30,7 @@ public class AuthUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.username;
     }
 
     @Override

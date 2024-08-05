@@ -25,6 +25,7 @@ public class AuthUserDetailServiceImpl implements UserDetailsService {
                         .builder()
                         .id(user.getId())
                         .email(user.getEmail())
+                        .username(user.getUsername())
                         .build())
                 .orElse(null);
     }

@@ -2,6 +2,7 @@ package mystic.conduit.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import mystic.conduit.shared.entity.BaseEntity;
 import org.apache.catalina.User;
 
 import java.util.Set;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class UserEntity extends BaseEntity {
 
     @Id
     @GeneratedValue

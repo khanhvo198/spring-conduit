@@ -4,16 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import mystic.conduit.domain.user.entity.UserEntity;
+import mystic.conduit.shared.entity.BaseEntity;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "favorites")
-public class FavoriteEntity {
-
-    @Id
-    @GeneratedValue
-    protected Long id;
+public class FavoriteEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
