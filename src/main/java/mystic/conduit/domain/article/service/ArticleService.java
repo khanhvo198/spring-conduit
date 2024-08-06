@@ -6,6 +6,8 @@ import mystic.conduit.domain.article.dto.SingleArticleDto;
 import mystic.conduit.domain.auth.entity.AuthUserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 public interface ArticleService {
     MultipleArticlesDto getArticles (String tag, String author, String favoritedBy, AuthUserDetails auth);
@@ -13,5 +15,7 @@ public interface ArticleService {
     MultipleArticlesDto getFeedArticles(AuthUserDetails auth);
 
     SingleArticleDto createArticle(CreateArticleDto article, AuthUserDetails auth);
+
+    SingleArticleDto getArticle(String slug, AuthUserDetails auth);
 
 }

@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Component
@@ -28,9 +29,17 @@ public class ArticleMapper {
         return mapper.map(article, ArticleDto.class);
     }
 
-    public SingleArticleDto mapToSingleArticle (ArticleEntity article, AuthUserDetails auth, Integer favoritesCount, Boolean favorited) {
+    public SingleArticleDto mapToSingleArticle (ArticleEntity article, AuthUserDetails auth) {
         String username = userRepository.findById(article.getAuthor().getId()).orElseThrow(UserNotFoundException::new).getUsername();
         ProfileDto author = profileService.getProfile(username, auth);
+
+        List<FavoriteEntity> favorites = article.getFavoriteBy();
+        boolean favorited = false;
+        int favoritesCount = 0;
+        if (favorites != null) {
+            favorited = favorites.stream().anyMatch(favoriteEntity -> favoriteEntity.getUser().getId().equals(auth.getId()));
+            favoritesCount = favorites.size();
+        }
 
         ArticleDto articleDto =  ArticleDto.builder()
                 .slug(article.getSlug())
@@ -48,13 +57,7 @@ public class ArticleMapper {
 
     public MultipleArticlesDto mapToMultipleArticles(List<ArticleEntity> articles, AuthUserDetails auth) {
         Integer articlesCount = articles.size();
-        List<ArticleDto> articleDtos = articles.stream().map(
-                article -> {
-                    List<FavoriteEntity> favorites = article.getFavoriteBy();
-                    Boolean isFavorited = favorites.stream().anyMatch(favoriteEntity -> favoriteEntity.getUser().getId().equals(auth.getId()));
-                    return mapToSingleArticle(article, auth, favorites.size(), isFavorited).getArticle();
-                }
-        ).toList();
+        List<ArticleDto> articleDtos = articles.stream().map(article -> mapToSingleArticle(article, auth).getArticle()).toList();
         return MultipleArticlesDto.builder().articles(articleDtos).articlesCount(articlesCount).build();
     };
 

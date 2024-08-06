@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/articles")
@@ -41,6 +42,13 @@ public class ArticleController {
     public ResponseEntity<SingleArticleDto> createArticle(@RequestBody CreateArticleDto article, @AuthenticationPrincipal AuthUserDetails auth) {
         return ResponseEntity.ok(articleService.createArticle(article, auth));
     };
+
+
+    @GetMapping("/{slug}")
+    public ResponseEntity<SingleArticleDto> getArticle(@PathVariable String slug, @AuthenticationPrincipal AuthUserDetails auth) {
+        return ResponseEntity.ok(articleService.getArticle(slug, auth));
+    }
+
 
 
 

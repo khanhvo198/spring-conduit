@@ -6,6 +6,7 @@ import mystic.conduit.domain.article.dto.CreateArticleDto;
 import mystic.conduit.domain.article.dto.MultipleArticlesDto;
 import mystic.conduit.domain.article.dto.SingleArticleDto;
 import mystic.conduit.domain.article.entity.ArticleEntity;
+import mystic.conduit.domain.article.entity.FavoriteEntity;
 import mystic.conduit.domain.article.mapper.ArticleMapper;
 import mystic.conduit.domain.article.repository.ArticleRepository;
 import mystic.conduit.domain.article.specification.ArticleSpecification;
@@ -13,6 +14,7 @@ import mystic.conduit.domain.auth.entity.AuthUserDetails;
 import mystic.conduit.domain.tag.entity.TagEntity;
 import mystic.conduit.domain.user.entity.UserEntity;
 import mystic.conduit.domain.user.repository.UserRepository;
+import mystic.conduit.exception.ArticleNotFoundException;
 import mystic.conduit.exception.UserNotFoundException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -67,6 +69,12 @@ public class ArticleServiceImpl implements ArticleService{
         newArticle.setTagList(tagList);
 
         newArticle = articleRepository.save(newArticle);
-        return articleMapper.mapToSingleArticle(newArticle, auth, 0, false);
+        return articleMapper.mapToSingleArticle(newArticle, auth);
+    }
+
+    @Override
+    public SingleArticleDto getArticle(String slug, AuthUserDetails auth) {
+        ArticleEntity article = articleRepository.findBySlug(slug).orElseThrow(ArticleNotFoundException::new);
+        return articleMapper.mapToSingleArticle(article, auth);
     }
 }
