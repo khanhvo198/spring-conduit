@@ -2,7 +2,6 @@ package mystic.conduit.domain.article.service;
 
 import com.github.slugify.Slugify;
 import lombok.AllArgsConstructor;
-import mystic.conduit.domain.article.dto.ArticleDto;
 import mystic.conduit.domain.article.dto.CreateArticleDto;
 import mystic.conduit.domain.article.dto.MultipleArticlesDto;
 import mystic.conduit.domain.article.dto.SingleArticleDto;
@@ -13,6 +12,8 @@ import mystic.conduit.domain.article.specification.ArticleSpecification;
 import mystic.conduit.domain.auth.entity.AuthUserDetails;
 import mystic.conduit.domain.tag.entity.TagEntity;
 import mystic.conduit.domain.user.entity.UserEntity;
+import mystic.conduit.domain.user.repository.UserRepository;
+import mystic.conduit.exception.UserNotFoundException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -24,19 +25,25 @@ public class ArticleServiceImpl implements ArticleService{
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
     private final Slugify slugify;
+    private final UserRepository userRepository;
 
     @Override
-    public MultipleArticlesDto getArticles(String tag, String author, String favoritedBy) {
+    public MultipleArticlesDto getFeedArticles(AuthUserDetails auth) {
+        UserEntity user = userRepository.findById(auth.getId()).orElseThrow(UserNotFoundException::new);
+        List<Long> followings = user.getFollowing().stream().map(UserEntity::getId).toList();
+
+        List<ArticleEntity> articles = articleRepository.findByAuthorIdIn(followings);
+        return articleMapper.mapToMultipleArticles(articles, auth);
+    }
+
+    @Override
+    public MultipleArticlesDto getArticles(String tag, String author, String favoritedBy, AuthUserDetails auth) {
         Specification<ArticleEntity> specifications = Specification.where(ArticleSpecification.hasTag(tag))
                 .and(ArticleSpecification.hasAuthor(author))
                 .and(ArticleSpecification.isFavoritedBy(favoritedBy));
 
         List<ArticleEntity> articles = articleRepository.findAll(specifications);
-        Integer articlesCount = articles.size();
-
-        List<ArticleDto> articleDtos = articles.stream().map(articleMapper::mapToArticle).toList();
-
-        return MultipleArticlesDto.builder().articles(articleDtos).articlesCount(articlesCount).build();
+        return articleMapper.mapToMultipleArticles(articles, auth);
     }
 
     @Override
@@ -55,6 +62,4 @@ public class ArticleServiceImpl implements ArticleService{
         newArticle = articleRepository.save(newArticle);
         return articleMapper.mapToSingleArticle(newArticle, auth, 0, false);
     }
-
-
 }

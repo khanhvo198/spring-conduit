@@ -2,9 +2,7 @@ package mystic.conduit.domain.article.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import mystic.conduit.domain.tag.entity.TagEntity;
 import mystic.conduit.domain.user.entity.UserEntity;
 import mystic.conduit.shared.entity.BaseEntity;
@@ -16,6 +14,8 @@ import java.util.List;
 @Setter
 @Builder
 @Table(name = "articles")
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArticleEntity extends BaseEntity {
 
     @Column(nullable = false)

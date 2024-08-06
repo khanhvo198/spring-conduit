@@ -19,13 +19,21 @@ import java.util.List;
 public class ArticleController {
     private final ArticleService articleService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<MultipleArticlesDto> getArticles(
             @RequestParam(value = "tag", required = false) String tag,
             @RequestParam(value = "author", required = false) String author,
-            @RequestParam(value = "favorited", required = false) String favorited
+            @RequestParam(value = "favorited", required = false) String favorited,
+            @AuthenticationPrincipal AuthUserDetails auth
     ) {
-        return ResponseEntity.ok(articleService.getArticles(tag, author, favorited));
+        return ResponseEntity.ok(articleService.getArticles(tag, author, favorited, auth));
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<MultipleArticlesDto> getFeedArticles(
+            @AuthenticationPrincipal AuthUserDetails auth
+    ) {
+        return ResponseEntity.ok(articleService.getFeedArticles(auth));
     }
 
 
@@ -35,10 +43,7 @@ public class ArticleController {
     };
 
 
-    @GetMapping("/feed")
-    public String getFeed() {
-        return "Feed";
-    }
+
 
 
 }

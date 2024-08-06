@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 
 public interface ArticleService {
-    MultipleArticlesDto getArticles (String tag, String author, String favoritedBy);
+    MultipleArticlesDto getArticles (String tag, String author, String favoritedBy, AuthUserDetails auth);
+
+    MultipleArticlesDto getFeedArticles(AuthUserDetails auth);
 
     SingleArticleDto createArticle(CreateArticleDto article, AuthUserDetails auth);
 

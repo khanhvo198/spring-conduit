@@ -22,11 +22,6 @@ import java.util.ArrayList;
 public class WebSecurityConfiguration {
     private final JwtAuthFilter jwtAuthFilter;
 
-    private final String[] WRITE = {
-            "/tags"
-    };
-
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -39,7 +34,6 @@ public class WebSecurityConfiguration {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(HttpMethod.POST, "/users/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, WRITE) .permitAll()
                                 .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

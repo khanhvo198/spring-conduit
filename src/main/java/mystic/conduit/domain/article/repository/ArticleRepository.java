@@ -11,4 +11,7 @@ import java.util.List;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> ,JpaSpecificationExecutor<ArticleEntity> {
+
+    List<ArticleEntity> findByAuthorIdIn(List<Long> authorIds);
+
 }
