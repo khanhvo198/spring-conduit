@@ -12,6 +12,10 @@ import mystic.conduit.shared.entity.BaseEntity;
 @Table(name = "favorites")
 public class FavoriteEntity extends BaseEntity {
 
+    @Id
+    @GeneratedValue
+    protected Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private ArticleEntity article;

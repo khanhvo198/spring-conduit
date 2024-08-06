@@ -18,6 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ArticleEntity extends BaseEntity {
 
+    @Id
+    @GeneratedValue
+    protected Long id;
+
     @Column(nullable = false)
     private String slug;
 
@@ -34,9 +38,9 @@ public class ArticleEntity extends BaseEntity {
     @JoinColumn(nullable = false)
     private UserEntity author;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TagEntity> tagList;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<FavoriteEntity> favoriteBy;
 }

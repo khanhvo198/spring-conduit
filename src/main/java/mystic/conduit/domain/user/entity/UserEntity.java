@@ -21,6 +21,7 @@ public class UserEntity extends BaseEntity {
     @GeneratedValue
     protected Long id;
 
+
     @Column(nullable = false, unique = true)
     private String username;
 

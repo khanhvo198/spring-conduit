@@ -14,10 +14,6 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
-    @Id
-    @GeneratedValue
-    protected Long id;
-
     @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
