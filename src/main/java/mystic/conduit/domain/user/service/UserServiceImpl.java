@@ -1,6 +1,7 @@
 package mystic.conduit.domain.user.service;
 
 import lombok.AllArgsConstructor;
+import mystic.conduit.domain.auth.entity.AuthUserDetails;
 import mystic.conduit.domain.user.dto.UpdateDto;
 import mystic.conduit.domain.user.dto.UserDto;
 import mystic.conduit.domain.user.entity.UserEntity;
@@ -22,19 +23,17 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDto getCurrentUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    public UserDto getCurrentUser(AuthUserDetails auth) {
+        String email = auth.getEmail();
         UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         return mapper.mapToUserResponse(userEntity);
     }
 
     @Override
-    public UserDto updateUser(UpdateDto user) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    public UserDto updateUser(UpdateDto user, AuthUserDetails auth) {
+        String email = auth.getEmail();
 
         UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-
-        System.out.println(userEntity);
 
         if (user.getEmail() != null) {
             userRepository.findByEmail(user.getEmail()).filter(found -> found.getId().equals(userEntity.getId())).ifPresent(found -> {

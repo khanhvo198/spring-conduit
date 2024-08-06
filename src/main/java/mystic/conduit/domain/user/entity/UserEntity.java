@@ -5,6 +5,7 @@ import lombok.*;
 import mystic.conduit.shared.entity.BaseEntity;
 import org.apache.catalina.User;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -42,7 +43,7 @@ public class UserEntity extends BaseEntity {
             joinColumns = @JoinColumn(name="follower"),
             inverseJoinColumns = @JoinColumn(name="following")
     )
-    private Set<UserEntity> follower;
+    private List<UserEntity> follower;
 
 
     @ManyToMany
@@ -51,7 +52,7 @@ public class UserEntity extends BaseEntity {
             joinColumns = @JoinColumn(name="following"),
             inverseJoinColumns = @JoinColumn(name="follower")
     )
-    private Set<UserEntity> following;
+    private List<UserEntity> following;
 
 
 
