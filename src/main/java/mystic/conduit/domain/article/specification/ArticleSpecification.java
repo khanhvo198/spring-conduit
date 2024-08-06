@@ -10,7 +10,7 @@ public class ArticleSpecification {
             if (tag == null || tag.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.isMember(tag, root.join("tagList", JoinType.LEFT).get("name"));
+            return criteriaBuilder.equal(root.join("tagList", JoinType.LEFT).get("name"), tag);
         };
     }
 
@@ -29,7 +29,7 @@ public class ArticleSpecification {
             if (username == null || username.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.isMember(username, root.join("favoritedBy", JoinType.LEFT).get("user").get("username"));
+            return criteriaBuilder.equal(root.join("favoritedBy", JoinType.LEFT).get("user").get("username"), username);
         };
     }
 

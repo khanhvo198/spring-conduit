@@ -17,6 +17,7 @@ import mystic.conduit.exception.UserNotFoundException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -56,8 +57,14 @@ public class ArticleServiceImpl implements ArticleService{
                 .body(article.getBody())
                 .description(article.getDescription())
                 .author(author)
-                .tagList(article.getTagList().stream().map(tag -> TagEntity.builder().name(tag).build()).toList())
                 .build();
+
+        List<TagEntity> tagList = new ArrayList<>();
+
+        for (String tag : article.getTagList()) {
+            tagList.add(TagEntity.builder().name(tag).article(newArticle).build());
+        }
+        newArticle.setTagList(tagList);
 
         newArticle = articleRepository.save(newArticle);
         return articleMapper.mapToSingleArticle(newArticle, auth, 0, false);
