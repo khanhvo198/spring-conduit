@@ -22,7 +22,7 @@ public class ArticleEntity extends BaseEntity {
     @GeneratedValue
     protected Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String slug;
 
     @Column(nullable = false)
