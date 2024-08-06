@@ -19,7 +19,11 @@ public class ProfileServiceImpl implements ProfileService{
     @Override
     public ProfileDto getProfile(String username, AuthUserDetails auth) {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-        Boolean isFollowing = userRepository.findByFollowerId(auth.getId()).orElseThrow(UserNotFoundException::new).stream().map(UserEntity::getId).anyMatch(following -> following.equals(user.getId()));
+        boolean isFollowing = false;
+        if (auth != null) {
+            isFollowing = userRepository.findByFollowerId(auth.getId()).stream().map(UserEntity::getId).anyMatch(following -> following.equals(user.getId()));
+        }
+
         return profileMapper.mapToProfileDto(user, isFollowing);
     }
 
