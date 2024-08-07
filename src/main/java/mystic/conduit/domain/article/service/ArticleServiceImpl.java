@@ -20,6 +20,8 @@ import mystic.conduit.domain.user.repository.UserRepository;
 import mystic.conduit.exception.ArticleNotFoundException;
 import mystic.conduit.exception.SlugTakenException;
 import mystic.conduit.exception.UserNotFoundException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -37,21 +39,24 @@ public class ArticleServiceImpl implements ArticleService{
     private final FavoriteRepository favoriteRepository;
 
     @Override
-    public MultipleArticlesDto getFeedArticles(AuthUserDetails auth) {
+    public MultipleArticlesDto getFeedArticles(AuthUserDetails auth, Integer limit, Integer offset) {
+        Pageable pageable = PageRequest.of(offset / limit, limit);
         UserEntity user = userRepository.findById(auth.getId()).orElseThrow(UserNotFoundException::new);
         List<Long> followings = user.getFollowing().stream().map(UserEntity::getId).toList();
 
-        List<ArticleEntity> articles = articleRepository.findByAuthorIdIn(followings);
+        List<ArticleEntity> articles = articleRepository.findByAuthorIdIn(followings, pageable);
         return articleMapper.mapToMultipleArticles(articles, auth);
     }
 
     @Override
-    public MultipleArticlesDto getArticles(String tag, String author, String favoritedBy, AuthUserDetails auth) {
+    public MultipleArticlesDto getArticles(String tag, String author, String favoritedBy, AuthUserDetails auth, Integer limit, Integer offset) {
+        Pageable pageable = PageRequest.of( offset / limit, limit);
+
         Specification<ArticleEntity> specifications = Specification.where(ArticleSpecification.hasTag(tag))
                 .and(ArticleSpecification.hasAuthor(author))
                 .and(ArticleSpecification.isFavoritedBy(favoritedBy));
 
-        List<ArticleEntity> articles = articleRepository.findAll(specifications);
+        List<ArticleEntity> articles = articleRepository.findAll(specifications, pageable).stream().toList();
         return articleMapper.mapToMultipleArticles(articles, auth);
     }
 

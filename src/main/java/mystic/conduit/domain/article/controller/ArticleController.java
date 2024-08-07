@@ -27,16 +27,20 @@ public class ArticleController {
             @RequestParam(value = "tag", required = false) String tag,
             @RequestParam(value = "author", required = false) String author,
             @RequestParam(value = "favorited", required = false) String favorited,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+            @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @AuthenticationPrincipal AuthUserDetails auth
     ) {
-        return ResponseEntity.ok(articleService.getArticles(tag, author, favorited, auth));
+        return ResponseEntity.ok(articleService.getArticles(tag, author, favorited, auth, limit, offset));
     }
 
     @GetMapping("/feed")
     public ResponseEntity<MultipleArticlesDto> getFeedArticles(
-            @AuthenticationPrincipal AuthUserDetails auth
+            @AuthenticationPrincipal AuthUserDetails auth,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+            @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset
     ) {
-        return ResponseEntity.ok(articleService.getFeedArticles(auth));
+        return ResponseEntity.ok(articleService.getFeedArticles(auth, limit, offset));
     }
 
 

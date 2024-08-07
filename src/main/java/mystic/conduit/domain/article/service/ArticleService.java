@@ -11,9 +11,9 @@ import java.util.Optional;
 
 
 public interface ArticleService {
-    MultipleArticlesDto getArticles (String tag, String author, String favoritedBy, AuthUserDetails auth);
+    MultipleArticlesDto getArticles (String tag, String author, String favoritedBy, AuthUserDetails auth, Integer limit, Integer offset);
 
-    MultipleArticlesDto getFeedArticles(AuthUserDetails auth);
+    MultipleArticlesDto getFeedArticles(AuthUserDetails auth, Integer limit, Integer offset);
 
     SingleArticleDto createArticle(CreateArticleDto article, AuthUserDetails auth);
 
