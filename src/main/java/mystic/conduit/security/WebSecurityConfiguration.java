@@ -36,6 +36,7 @@ public class WebSecurityConfiguration {
                         requests.requestMatchers(HttpMethod.POST, "/users/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/articles/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/profile/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/tags").permitAll()
                                 .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
