@@ -28,10 +28,14 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFound(UserNotFoundException ex, WebRequest req) {
+    public ResponseEntity<?> handleUserNotFound(UserNotFoundException ex, WebRequest req) {
         return handleNotFoundException("user", ex, req);
     }
 
+    @ExceptionHandler(SlugTakenException.class)
+    public ResponseEntity<?> handleSlugTaken(SlugTakenException ex, WebRequest req) {
+        return handleTakenException("slug", ex, req);
+    }
 
     private ResponseEntity<?> handleNotFoundException(String context, NotFoundException ex, WebRequest req) {
         String message = ex.getMessage();
