@@ -51,6 +51,19 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.updateArticle(slug, article, auth));
     };
 
+    @PostMapping("/{slug}/favorite")
+    public ResponseEntity<SingleArticleDto> favoriteArticle(@PathVariable String slug, @AuthenticationPrincipal AuthUserDetails auth) {
+        return ResponseEntity.ok(articleService.favoriteArticle(slug, auth));
+    }
+
+    @DeleteMapping("/{slug}/favorite")
+    public ResponseEntity<SingleArticleDto> unFavoriteArticle(@PathVariable String slug, @AuthenticationPrincipal AuthUserDetails auth) {
+        return ResponseEntity.ok(articleService.unFavoriteArticle(slug, auth));
+    }
+
+
+
+
 
 
 

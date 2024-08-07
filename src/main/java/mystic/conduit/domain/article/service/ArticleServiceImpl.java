@@ -117,4 +117,28 @@ public class ArticleServiceImpl implements ArticleService{
 
         return articleMapper.mapToSingleArticle(updatedArticle, auth);
     }
+
+
+    @Override
+    public SingleArticleDto favoriteArticle(String slug, AuthUserDetails auth) {
+        ArticleEntity article = articleRepository.findBySlug(slug).orElseThrow(ArticleNotFoundException::new);
+        UserEntity user = userRepository.findById(auth.getId()).orElseThrow(UserNotFoundException::new);
+
+        article.getFavoriteBy().add(FavoriteEntity.builder().article(article).user(user).build());
+        article = articleRepository.save(article);
+
+        return articleMapper.mapToSingleArticle(article, auth);
+    }
+
+    @Override
+    public SingleArticleDto unFavoriteArticle(String slug, AuthUserDetails auth) {
+        ArticleEntity article = articleRepository.findBySlug(slug).orElseThrow(ArticleNotFoundException::new);
+        UserEntity user = userRepository.findById(auth.getId()).orElseThrow(UserNotFoundException::new);
+
+        FavoriteEntity favoriteFound = article.getFavoriteBy().stream().filter(favoriteEntity -> favoriteEntity.getArticle().getId().equals(article.getId()) && favoriteEntity.getUser().getId().equals(user.getId())).findAny().orElse(null);
+
+        article.getFavoriteBy().remove(favoriteFound);
+
+        return articleMapper.mapToSingleArticle(article, auth);
+    }
 }

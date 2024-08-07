@@ -1,15 +1,17 @@
 package mystic.conduit.domain.article.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import mystic.conduit.domain.user.entity.UserEntity;
 import mystic.conduit.shared.entity.BaseEntity;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name = "favorites")
+@AllArgsConstructor
+@NoArgsConstructor
 public class FavoriteEntity extends BaseEntity {
 
     @Id

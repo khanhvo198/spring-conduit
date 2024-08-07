@@ -21,4 +21,9 @@ public interface ArticleService {
 
     SingleArticleDto updateArticle(String slug, UpdateArticleDto article, AuthUserDetails auth);
 
+    SingleArticleDto favoriteArticle(String slug, AuthUserDetails auth) ;
+
+    SingleArticleDto unFavoriteArticle(String slug, AuthUserDetails auth);
+
+
 }
