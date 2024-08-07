@@ -17,7 +17,7 @@ import java.util.Optional;
 public class JwtAuthFilter extends GenericFilter {
     private final JwtUtils jwtUtils;
     private final AuthenticationProvider authenticationProvider;
-    private final String PREFIX_TOKEN = "Token ";
+    private final String PREFIX_TOKEN = "Bearer ";
 
 
     @Override
