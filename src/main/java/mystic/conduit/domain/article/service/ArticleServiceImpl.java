@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import mystic.conduit.domain.article.dto.CreateArticleDto;
 import mystic.conduit.domain.article.dto.MultipleArticlesDto;
 import mystic.conduit.domain.article.dto.SingleArticleDto;
+import mystic.conduit.domain.article.dto.UpdateArticleDto;
 import mystic.conduit.domain.article.entity.ArticleEntity;
 import mystic.conduit.domain.article.entity.FavoriteEntity;
 import mystic.conduit.domain.article.mapper.ArticleMapper;
@@ -15,6 +16,7 @@ import mystic.conduit.domain.tag.entity.TagEntity;
 import mystic.conduit.domain.user.entity.UserEntity;
 import mystic.conduit.domain.user.repository.UserRepository;
 import mystic.conduit.exception.ArticleNotFoundException;
+import mystic.conduit.exception.SlugTakenException;
 import mystic.conduit.exception.UserNotFoundException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -52,6 +54,11 @@ public class ArticleServiceImpl implements ArticleService{
     @Override
     public SingleArticleDto createArticle(CreateArticleDto article, AuthUserDetails auth) {
         String slug = slugify.slugify(article.getTitle());
+        ArticleEntity found = articleRepository.findBySlug(slug).orElse(null);
+        if (found != null) {
+            throw new SlugTakenException();
+        }
+
         UserEntity author = UserEntity.builder().id(auth.getId()).build();
         ArticleEntity newArticle = ArticleEntity.builder()
                 .slug(slug)
@@ -76,5 +83,38 @@ public class ArticleServiceImpl implements ArticleService{
     public SingleArticleDto getArticle(String slug, AuthUserDetails auth) {
         ArticleEntity article = articleRepository.findBySlug(slug).orElseThrow(ArticleNotFoundException::new);
         return articleMapper.mapToSingleArticle(article, auth);
+    }
+
+
+    @Override
+    public SingleArticleDto updateArticle(String slug, UpdateArticleDto article, AuthUserDetails auth) {
+        ArticleEntity found = articleRepository.findBySlug(slug).orElseThrow(ArticleNotFoundException::new);
+
+        if (article.getTitle() != null) {
+            String newSlug = slugify.slugify(article.getTitle());
+            ArticleEntity foundByNewSlug = articleRepository.findBySlug(newSlug).orElse(null);
+            if (foundByNewSlug != null) {
+                throw new SlugTakenException();
+            }
+
+            found.setTitle(article.getTitle());
+            found.setSlug(newSlug);
+        }
+
+        if (article.getBody() != null) {
+            found.setBody(article.getBody());
+        }
+
+        if (article.getDescription() != null) {
+            found.setDescription(article.getDescription());
+        }
+
+        if (article.getTagList() != null) {
+            found.setTagList(article.getTagList().stream().map(tag -> TagEntity.builder().article(found).name(tag).build()).toList());
+        }
+
+        ArticleEntity updatedArticle = articleRepository.save(found);
+
+        return articleMapper.mapToSingleArticle(updatedArticle, auth);
     }
 }

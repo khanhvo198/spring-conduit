@@ -31,7 +31,7 @@ public class ArticleMapper {
 
     public SingleArticleDto mapToSingleArticle (ArticleEntity article, AuthUserDetails auth) {
         String username = userRepository.findById(article.getAuthor().getId()).orElseThrow(UserNotFoundException::new).getUsername();
-        ProfileDto author = profileService.getProfile(username, auth);
+        ProfileDto author = profileService.getProfile(username, auth).getProfile();
 
         List<FavoriteEntity> favorites = article.getFavoriteBy();
         boolean favorited = false;
