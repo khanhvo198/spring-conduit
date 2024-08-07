@@ -3,6 +3,7 @@ package mystic.conduit.domain.profile.service;
 import lombok.AllArgsConstructor;
 import mystic.conduit.domain.auth.entity.AuthUserDetails;
 import mystic.conduit.domain.profile.dto.ProfileDto;
+import mystic.conduit.domain.profile.dto.SingleProfileDto;
 import mystic.conduit.domain.profile.mapper.ProfileMapper;
 import mystic.conduit.domain.user.entity.UserEntity;
 import mystic.conduit.domain.user.repository.UserRepository;
@@ -17,7 +18,7 @@ public class ProfileServiceImpl implements ProfileService{
     private final ProfileMapper profileMapper;
 
     @Override
-    public ProfileDto getProfile(String username, AuthUserDetails auth) {
+    public SingleProfileDto getProfile(String username, AuthUserDetails auth) {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         boolean isFollowing = false;
         if (auth != null) {
@@ -28,7 +29,7 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public ProfileDto followProfile(String username, AuthUserDetails auth) {
+    public SingleProfileDto followProfile(String username, AuthUserDetails auth) {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         UserEntity currentUser = userRepository.findById(auth.getId()).orElseThrow(UserNotFoundException::new);
         currentUser.getFollowing().add(user);
@@ -37,7 +38,7 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public ProfileDto unfollowProfile(String username, AuthUserDetails auth) {
+    public SingleProfileDto unfollowProfile(String username, AuthUserDetails auth) {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         UserEntity currentUser = userRepository.findById(auth.getId()).orElseThrow(UserNotFoundException::new);
         currentUser.getFollowing().remove(user);
