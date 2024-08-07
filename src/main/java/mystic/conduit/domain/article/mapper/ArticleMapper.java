@@ -60,8 +60,7 @@ public class ArticleMapper {
         return SingleArticleDto.builder().article(articleDto).build();
     }
 
-    public MultipleArticlesDto mapToMultipleArticles(List<ArticleEntity> articles, AuthUserDetails auth) {
-        Integer articlesCount = articles.size();
+    public MultipleArticlesDto mapToMultipleArticles(List<ArticleEntity> articles, Integer articlesCount, AuthUserDetails auth) {
         List<ArticleDto> articleDtos = articles.stream().map(article -> mapToSingleArticle(article, auth).getArticle()).toList();
         return MultipleArticlesDto.builder().articles(articleDtos).articlesCount(articlesCount).build();
     };

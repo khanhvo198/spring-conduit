@@ -1,6 +1,7 @@
 package mystic.conduit.domain.article.repository;
 
 import mystic.conduit.domain.article.entity.ArticleEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -13,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> ,JpaSpecificationExecutor<ArticleEntity>, PagingAndSortingRepository<ArticleEntity, Long> {
 
-    List<ArticleEntity> findByAuthorIdIn(List<Long> authorIds, Pageable pageable);
+    Page<ArticleEntity> findByAuthorIdIn(List<Long> authorIds, Pageable pageable);
 
     Optional<ArticleEntity> findBySlug(String slug);
 

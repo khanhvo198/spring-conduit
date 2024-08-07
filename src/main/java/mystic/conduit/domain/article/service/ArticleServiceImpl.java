@@ -20,6 +20,7 @@ import mystic.conduit.domain.user.repository.UserRepository;
 import mystic.conduit.exception.ArticleNotFoundException;
 import mystic.conduit.exception.SlugTakenException;
 import mystic.conduit.exception.UserNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -44,20 +45,22 @@ public class ArticleServiceImpl implements ArticleService{
         UserEntity user = userRepository.findById(auth.getId()).orElseThrow(UserNotFoundException::new);
         List<Long> followings = user.getFollowing().stream().map(UserEntity::getId).toList();
 
-        List<ArticleEntity> articles = articleRepository.findByAuthorIdIn(followings, pageable);
-        return articleMapper.mapToMultipleArticles(articles, auth);
+        Page<ArticleEntity> articlePage = articleRepository.findByAuthorIdIn(followings, pageable);
+        List<ArticleEntity> articles = articlePage.stream().toList();
+        return articleMapper.mapToMultipleArticles(articles, Math.round(articlePage.getTotalElements()), auth);
     }
 
     @Override
     public MultipleArticlesDto getArticles(String tag, String author, String favoritedBy, AuthUserDetails auth, Integer limit, Integer offset) {
-        Pageable pageable = PageRequest.of( offset / limit, limit);
+        Pageable pageable = PageRequest.of(  Math.floorDiv(offset , limit), limit);
 
         Specification<ArticleEntity> specifications = Specification.where(ArticleSpecification.hasTag(tag))
                 .and(ArticleSpecification.hasAuthor(author))
                 .and(ArticleSpecification.isFavoritedBy(favoritedBy));
 
-        List<ArticleEntity> articles = articleRepository.findAll(specifications, pageable).stream().toList();
-        return articleMapper.mapToMultipleArticles(articles, auth);
+        Page<ArticleEntity> articlePage = articleRepository.findAll(specifications, pageable);
+        List<ArticleEntity> articles = articlePage.stream().toList();
+        return articleMapper.mapToMultipleArticles(articles, Math.round(articlePage.getTotalElements()), auth);
     }
 
     @Override
@@ -99,7 +102,7 @@ public class ArticleServiceImpl implements ArticleService{
     public SingleArticleDto updateArticle(String slug, UpdateArticleDto article, AuthUserDetails auth) {
         ArticleEntity found = articleRepository.findBySlug(slug).orElseThrow(ArticleNotFoundException::new);
 
-        if (article.getTitle() != null) {
+        if (article.getTitle() != null && !article.getTitle().equals(found.getTitle())) {
             String newSlug = slugify.slugify(article.getTitle());
             ArticleEntity foundByNewSlug = articleRepository.findBySlug(newSlug).orElse(null);
             if (foundByNewSlug != null) {
@@ -119,7 +122,18 @@ public class ArticleServiceImpl implements ArticleService{
         }
 
         if (article.getTagList() != null) {
-            found.setTagList(article.getTagList().stream().map(tag -> TagEntity.builder().article(found).name(tag).build()).toList());
+            List<String> tagList = found.getTagList().stream().map(TagEntity::getName).toList();
+            for (String tag : article.getTagList()) {
+                if (!tagList.contains(tag)) {
+                    found.getTagList().add(TagEntity.builder().article(found).name(tag).build());
+                }
+            }
+
+            for (String tag: tagList) {
+                if (!article.getTagList().contains(tag)) {
+                    found.getTagList().remove(found.getTagList().stream().filter(tagEntity -> tagEntity.getName().equals(tag)).findAny().orElse(null));
+                }
+            }
         }
 
         ArticleEntity updatedArticle = articleRepository.save(found);
