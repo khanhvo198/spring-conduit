@@ -7,6 +7,10 @@ import mystic.conduit.domain.article.dto.SingleArticleDto;
 import mystic.conduit.domain.article.dto.UpdateArticleDto;
 import mystic.conduit.domain.article.service.ArticleService;
 import mystic.conduit.domain.auth.entity.AuthUserDetails;
+import mystic.conduit.domain.comment.dto.CreateCommentDto;
+import mystic.conduit.domain.comment.dto.MultipleCommentsDto;
+import mystic.conduit.domain.comment.dto.SingleCommentDto;
+import mystic.conduit.domain.comment.service.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class ArticleController {
     private final ArticleService articleService;
+    private final CommentService commentService;
 
     @GetMapping
     public ResponseEntity<MultipleArticlesDto> getArticles(
@@ -62,6 +67,27 @@ public class ArticleController {
     }
 
 
+
+    @PostMapping("/{slug}/comments")
+    public ResponseEntity<SingleCommentDto> addComment(@PathVariable String slug, @RequestBody CreateCommentDto comment, @AuthenticationPrincipal AuthUserDetails auth) {
+        return ResponseEntity.ok(commentService.addComment(slug, comment, auth));
+    }
+
+    @GetMapping("/{slug}/comments")
+    public ResponseEntity<MultipleCommentsDto> getComments(@PathVariable String slug, @AuthenticationPrincipal AuthUserDetails auth) {
+        return ResponseEntity.ok(commentService.getComments(slug, auth));
+    }
+
+
+    @DeleteMapping("/{slug}/comments/{id}")
+    public void deleteComment(@PathVariable String slug, @PathVariable Long id, @AuthenticationPrincipal AuthUserDetails auth) {
+        commentService.deleteComment(slug, id, auth);
+    }
+
+    @DeleteMapping("/{slug}")
+    public void deleteArticle(@PathVariable String slug, @AuthenticationPrincipal AuthUserDetails auth) {
+        articleService.deleteArticle(slug, auth);
+    }
 
 
 

@@ -25,5 +25,5 @@ public interface ArticleService {
 
     SingleArticleDto unFavoriteArticle(String slug, AuthUserDetails auth);
 
-
+    void deleteArticle(String slug, AuthUserDetails auth);
 }

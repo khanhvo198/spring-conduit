@@ -36,10 +36,15 @@ public class ArticleMapper {
         List<FavoriteEntity> favorites = article.getFavoritedBy();
         boolean favorited = false;
         int favoritesCount = 0;
+
         if (favorites != null) {
-            favorited = favorites.stream().anyMatch(favoriteEntity -> favoriteEntity.getUser().getId().equals(auth.getId()));
             favoritesCount = favorites.size();
         }
+
+        if (favorites != null && auth != null) {
+            favorited = favorites.stream().anyMatch(favoriteEntity -> favoriteEntity.getUser().getId().equals(auth.getId()));
+        }
+
 
         ArticleDto articleDto =  ArticleDto.builder()
                 .slug(article.getSlug())

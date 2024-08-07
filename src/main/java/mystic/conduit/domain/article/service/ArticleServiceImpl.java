@@ -1,6 +1,7 @@
 package mystic.conduit.domain.article.service;
 
 import com.github.slugify.Slugify;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import mystic.conduit.domain.article.dto.CreateArticleDto;
 import mystic.conduit.domain.article.dto.MultipleArticlesDto;
@@ -154,5 +155,12 @@ public class ArticleServiceImpl implements ArticleService{
         ArticleEntity updatedArticle = articleRepository.save(article);
 
         return articleMapper.mapToSingleArticle(updatedArticle, auth);
+    }
+
+    @Transactional
+    @Override
+    public void deleteArticle(String slug, AuthUserDetails auth) {
+        articleRepository.findBySlugAndAuthorId(slug, auth.getId()).orElseThrow(ArticleNotFoundException::new);
+        articleRepository.deleteBySlug(slug);
     }
 }

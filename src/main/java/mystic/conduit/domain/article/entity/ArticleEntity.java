@@ -3,6 +3,7 @@ package mystic.conduit.domain.article.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import mystic.conduit.domain.comment.entity.CommentEntity;
 import mystic.conduit.domain.tag.entity.TagEntity;
 import mystic.conduit.domain.user.entity.UserEntity;
 import mystic.conduit.shared.entity.BaseEntity;
@@ -43,4 +44,8 @@ public class ArticleEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FavoriteEntity> favoritedBy;
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentEntity> comments;
+
 }
