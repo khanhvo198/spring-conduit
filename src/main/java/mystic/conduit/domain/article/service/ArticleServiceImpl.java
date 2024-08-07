@@ -10,6 +10,7 @@ import mystic.conduit.domain.article.entity.ArticleEntity;
 import mystic.conduit.domain.article.entity.FavoriteEntity;
 import mystic.conduit.domain.article.mapper.ArticleMapper;
 import mystic.conduit.domain.article.repository.ArticleRepository;
+import mystic.conduit.domain.article.repository.FavoriteRepository;
 import mystic.conduit.domain.article.specification.ArticleSpecification;
 import mystic.conduit.domain.auth.entity.AuthUserDetails;
 import mystic.conduit.domain.tag.entity.TagEntity;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -31,6 +33,7 @@ public class ArticleServiceImpl implements ArticleService{
     private final ArticleMapper articleMapper;
     private final Slugify slugify;
     private final UserRepository userRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Override
     public MultipleArticlesDto getFeedArticles(AuthUserDetails auth) {
@@ -124,7 +127,13 @@ public class ArticleServiceImpl implements ArticleService{
         ArticleEntity article = articleRepository.findBySlug(slug).orElseThrow(ArticleNotFoundException::new);
         UserEntity user = userRepository.findById(auth.getId()).orElseThrow(UserNotFoundException::new);
 
-        article.getFavoriteBy().add(FavoriteEntity.builder().article(article).user(user).build());
+        Optional<FavoriteEntity> favoriteFound = favoriteRepository.findByArticleIdAndUserId(article.getId(), user.getId());
+
+        if (favoriteFound.isPresent()) {
+            return articleMapper.mapToSingleArticle(article, auth);
+        }
+
+        article.getFavoritedBy().add(FavoriteEntity.builder().article(article).user(user).build());
         article = articleRepository.save(article);
 
         return articleMapper.mapToSingleArticle(article, auth);
@@ -135,10 +144,15 @@ public class ArticleServiceImpl implements ArticleService{
         ArticleEntity article = articleRepository.findBySlug(slug).orElseThrow(ArticleNotFoundException::new);
         UserEntity user = userRepository.findById(auth.getId()).orElseThrow(UserNotFoundException::new);
 
-        FavoriteEntity favoriteFound = article.getFavoriteBy().stream().filter(favoriteEntity -> favoriteEntity.getArticle().getId().equals(article.getId()) && favoriteEntity.getUser().getId().equals(user.getId())).findAny().orElse(null);
+        Optional<FavoriteEntity> favoriteFound = article.getFavoritedBy().stream().filter(favoriteEntity -> favoriteEntity.getArticle().getId().equals(article.getId()) && favoriteEntity.getUser().getId().equals(user.getId())).findAny();
 
-        article.getFavoriteBy().remove(favoriteFound);
+        if (favoriteFound.isEmpty()) {
+            return articleMapper.mapToSingleArticle(article, auth);
+        }
 
-        return articleMapper.mapToSingleArticle(article, auth);
+        article.getFavoritedBy().remove(favoriteFound.get());
+        ArticleEntity updatedArticle = articleRepository.save(article);
+
+        return articleMapper.mapToSingleArticle(updatedArticle, auth);
     }
 }

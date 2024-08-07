@@ -41,6 +41,6 @@ public class ArticleEntity extends BaseEntity {
     @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TagEntity> tagList;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<FavoriteEntity> favoriteBy;
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FavoriteEntity> favoritedBy;
 }

@@ -33,7 +33,7 @@ public class ArticleMapper {
         String username = userRepository.findById(article.getAuthor().getId()).orElseThrow(UserNotFoundException::new).getUsername();
         ProfileDto author = profileService.getProfile(username, auth).getProfile();
 
-        List<FavoriteEntity> favorites = article.getFavoriteBy();
+        List<FavoriteEntity> favorites = article.getFavoritedBy();
         boolean favorited = false;
         int favoritesCount = 0;
         if (favorites != null) {
