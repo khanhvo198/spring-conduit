@@ -1,7 +1,7 @@
 ✅ About the Project
-- Conduit is a simple, full-featured API for a Medium-like blogging platform, built with Java Spring Boot.
+- Conduit is a simple, full-featured API for a Medium-like blogging platform, built with Java Spring Boot, you can explore it right [there](https://realworld-docs.netlify.app/).
 The project supports user authentication, article management, comments, and social features like following authors and favoriting articles.
-It was built from scratch as a learning project to practice designing database relationships, writing clean API endpoints, and working with Spring Framework.
+- It was built from scratch as a learning project to practice designing database relationships, writing clean API endpoints, and working with Spring Framework.
 
 ✨ Features
 - User registration and authentication (JWT-based)
